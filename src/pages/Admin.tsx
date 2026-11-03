@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
-import { collection, doc, setDoc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, onSnapshot, getDoc, writeBatch } from 'firebase/firestore';
+import { collection, doc, serverTimestamp, query, orderBy, onSnapshot, getDoc, writeBatch } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { MatchData, RankingConfig, LOL_FACULTIES, VAL_FACULTIES } from '../types';
 import { getLoLGroups, getValorantGroups, getValorantPreQualWinner } from '../utils/groups';
@@ -163,7 +163,7 @@ export default function Admin() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    try { await signInWithEmailAndPassword(auth, email, pass); } catch(err) { alert('Credenciales inválidas.'); }
+    try { await signInWithEmailAndPassword(auth, email, pass); } catch { alert('Credenciales inválidas.'); }
   };
 
   const logAudit = (batch: any, action: string, docId: string, oldData: any, newData: any) => {
@@ -186,7 +186,7 @@ export default function Admin() {
       batch.set(logRef, { user: user.uid, timestamp: serverTimestamp(), action: 'UPDATE', collection: 'config', docId: 'ranking', oldData: rankingConfig, newData: { lol: rankLoL, valorant: rankVal } });
       await batch.commit();
       alert("Ranking guardado.");
-    } catch(err) { alert("Error guardando config."); }
+    } catch { alert("Error guardando config."); }
   };
 
   const handleSubmitMatch = async (e: React.FormEvent) => {
@@ -277,7 +277,7 @@ export default function Admin() {
       }
       setStatA(''); setStatB(''); setScoreA(''); setScoreB(''); setDuration(''); setIsWalkover(false);
       setMatchNumber((Number(matchNumber)+1).toString());
-    } catch(err) { alert('Error guardando partido.'); }
+    } catch { alert('Error guardando partido.'); }
   };
 
   const handleEdit = (m: MatchData) => {
